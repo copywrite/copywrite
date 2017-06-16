@@ -1,0 +1,78 @@
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" version="2.0"><channel><title>CopyWrite</title><description>Thoughts, stories and ideas.</description><link>http://localhost:2368/</link><generator>Ghost 0.11</generator><lastBuildDate>Fri, 16 Jun 2017 14:46:19 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title>在Github上部署Ghost</title><description>&lt;p&gt;参考网址 &lt;/p&gt;
+
+&lt;p&gt;[1] TryGhost &lt;a href="https://github.com/TryGhost/Ghost/tree/stable"&gt;https://github.com/TryGhost/Ghost/tree/stable&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;以下操作在Mac环境， Ghost版本 0.7.5&lt;/p&gt;
+
+&lt;h6 id="githubrepo"&gt;Github repo&lt;/h6&gt;
+
+&lt;ul&gt;
+&lt;li&gt;建立新的repo，命名规则为 yourname.github.io&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h6 id=""&gt;本地安装&lt;/h6&gt;
+
+&lt;ul&gt;
+&lt;li&gt;下载Ghost的发布版本，&lt;a href="https://ghost.org/download/"&gt;https://ghost.org/download/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;解压至Git分支根目录下的Blog文件夹&lt;/li&gt;
+&lt;li&gt;命令行下切换至Blog路径，输入npm install --production&lt;/li&gt;
+&lt;li&gt;依赖包安装完毕之后本地启动 npm start&lt;/li&gt;
+&lt;li&gt;如果能看到 &lt;a href="http://localhost:2368/"&gt;http://localhost:2368/&lt;/a&gt; 表示启动成功&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h6 id="ghost"&gt;配置Ghost&lt;/h6&gt;
+
+&lt;ul&gt;
+&lt;li&gt;配置地址为 &lt;a href="http://localhost:2368/ghost"&gt;http://localhost:2368/ghost&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;详细配置略&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h6 id=""&gt;静态化&lt;/h6&gt;
+
+&lt;p&gt;静态化使用到了Buster这个工具，&lt;/p&gt;</description><link>http://localhost:2368/welcome-to-ghost/</link><guid isPermaLink="false">1c14c2fe-3bff-44ab-929a-6fe788ec15f4</guid><category>Getting Started</category><dc:creator>dili</dc:creator><pubDate>Fri, 16 Jun 2017 14:19:58 GMT</pubDate><content:encoded>&lt;p&gt;参考网址 &lt;/p&gt;
+
+&lt;p&gt;[1] TryGhost &lt;a href="https://github.com/TryGhost/Ghost/tree/stable"&gt;https://github.com/TryGhost/Ghost/tree/stable&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;以下操作在Mac环境， Ghost版本 0.7.5&lt;/p&gt;
+
+&lt;h6 id="githubrepo"&gt;Github repo&lt;/h6&gt;
+
+&lt;ul&gt;
+&lt;li&gt;建立新的repo，命名规则为 yourname.github.io&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h6 id=""&gt;本地安装&lt;/h6&gt;
+
+&lt;ul&gt;
+&lt;li&gt;下载Ghost的发布版本，&lt;a href="https://ghost.org/download/"&gt;https://ghost.org/download/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;解压至Git分支根目录下的Blog文件夹&lt;/li&gt;
+&lt;li&gt;命令行下切换至Blog路径，输入npm install --production&lt;/li&gt;
+&lt;li&gt;依赖包安装完毕之后本地启动 npm start&lt;/li&gt;
+&lt;li&gt;如果能看到 &lt;a href="http://localhost:2368/"&gt;http://localhost:2368/&lt;/a&gt; 表示启动成功&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h6 id="ghost"&gt;配置Ghost&lt;/h6&gt;
+
+&lt;ul&gt;
+&lt;li&gt;配置地址为 &lt;a href="http://localhost:2368/ghost"&gt;http://localhost:2368/ghost&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;详细配置略&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h6 id=""&gt;静态化&lt;/h6&gt;
+
+&lt;p&gt;静态化使用到了Buster这个工具，实际使用中发现了一个Bug，即静态资源文件后面带上了控制文件版本的参数，例如 hi.css?v=2.0 Github环境通过此文件名无法找到文件，需去掉后面的参数部分。Buster代码中有进行fix，在我的环境中不能生效，遂进行了简单fix。 
+修复后的分支为：&lt;a href="https://github.com/copywrite/buster"&gt;https://github.com/copywrite/buster&lt;/a&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;在Ghost的同级目录fork buster，安装相关的python依赖&lt;/li&gt;
+&lt;li&gt;在Ghost目录建立static文件夹，或者通过buster setup命令生成&lt;/li&gt;
+&lt;li&gt;buster generate 生成静态文件&lt;/li&gt;
+&lt;li&gt;将static文件夹中的静态文件拷贝至Ghost根目录&lt;/li&gt;
+&lt;li&gt;提交Ghost分支&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=""&gt;#&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;等待片刻后访问 &lt;a href="http://yourname.github.io"&gt;http://yourname.github.io&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item></channel></rss>
