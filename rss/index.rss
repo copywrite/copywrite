@@ -1,4 +1,56 @@
-<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" version="2.0"><channel><title>CopyWrite</title><description>Thoughts, stories and ideas.</description><link>http://localhost:2368/</link><generator>Ghost 0.11</generator><lastBuildDate>Fri, 16 Jun 2017 14:46:19 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title>在Github上部署Ghost</title><description>&lt;p&gt;参考网址 &lt;/p&gt;
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" version="2.0"><channel><title>CopyWrite</title><description>Thoughts, stories and ideas.</description><link>http://localhost:2368/</link><generator>Ghost 0.11</generator><lastBuildDate>Fri, 16 Jun 2017 15:01:32 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title>在Github上部署Ghost 0.11.9</title><description>&lt;p&gt;[1] &lt;a href="https://ghost.org/developers/"&gt;https://ghost.org/developers/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;以下操作在 Mac，Node 6.9.0, Ghost 0.11.9 环境完成&lt;/p&gt;
+
+&lt;h5 id=""&gt;本地安装&lt;/h5&gt;
+
+&lt;ul&gt;
+&lt;li&gt;下载Ghost的发布版本，&lt;a href="https://ghost.org/download/"&gt;https://ghost.org/download/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;解压至本地 Ghost 文件夹，unzip Ghost-0.11.9.zip -d Ghost&lt;/li&gt;
+&lt;li&gt;命令行切换至 Ghost 文件夹，通过 npm install --production 安装依赖&lt;/li&gt;
+&lt;li&gt;依赖包安装完毕之后本地启动 npm start&lt;/li&gt;
+&lt;li&gt;如果能看到 &lt;a href="http://localhost:2368/"&gt;http://localhost:2368/&lt;/a&gt; 表示启动成功&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id="ghost"&gt;配置Ghost&lt;/h5&gt;
+
+&lt;ul&gt;
+&lt;li&gt;配置地址为&lt;/li&gt;&lt;/ul&gt;</description><link>http://localhost:2368/zai-githubshang-bu-shu-ghost-0-11-9/</link><guid isPermaLink="false">e50c8edd-4d85-4623-87a6-33bca95c321d</guid><dc:creator>dili</dc:creator><pubDate>Fri, 16 Jun 2017 15:01:13 GMT</pubDate><content:encoded>&lt;p&gt;[1] &lt;a href="https://ghost.org/developers/"&gt;https://ghost.org/developers/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;以下操作在 Mac，Node 6.9.0, Ghost 0.11.9 环境完成&lt;/p&gt;
+
+&lt;h5 id=""&gt;本地安装&lt;/h5&gt;
+
+&lt;ul&gt;
+&lt;li&gt;下载Ghost的发布版本，&lt;a href="https://ghost.org/download/"&gt;https://ghost.org/download/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;解压至本地 Ghost 文件夹，unzip Ghost-0.11.9.zip -d Ghost&lt;/li&gt;
+&lt;li&gt;命令行切换至 Ghost 文件夹，通过 npm install --production 安装依赖&lt;/li&gt;
+&lt;li&gt;依赖包安装完毕之后本地启动 npm start&lt;/li&gt;
+&lt;li&gt;如果能看到 &lt;a href="http://localhost:2368/"&gt;http://localhost:2368/&lt;/a&gt; 表示启动成功&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id="ghost"&gt;配置Ghost&lt;/h5&gt;
+
+&lt;ul&gt;
+&lt;li&gt;配置地址为 &lt;a href="http://localhost:2368/ghost"&gt;http://localhost:2368/ghost&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;配置内容仅包含用户名、邮箱和密码&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=""&gt;静态化&lt;/h5&gt;
+
+&lt;p&gt;仍然使用 Buster 进行静态化&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;安装 Buster，pip install buster&lt;/li&gt;
+&lt;li&gt;配置 GitPages Repo， buster setup --gh-repo=&lt;/li&gt;
+&lt;li&gt;生成静态页面，buster generate&lt;/li&gt;
+&lt;li&gt;预览静态页面，buster preview，结果会提示服务端口号，默认为9000&lt;/li&gt;
+&lt;li&gt;预览无误后将静态文件提交至远程目录，buster deploy&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=""&gt;#&lt;/h5&gt;
+
+&lt;p&gt;Done&lt;/p&gt;</content:encoded></item><item><title>在Github上部署Ghost</title><description>&lt;p&gt;参考网址 &lt;/p&gt;
 
 &lt;p&gt;[1] TryGhost &lt;a href="https://github.com/TryGhost/Ghost/tree/stable"&gt;https://github.com/TryGhost/Ghost/tree/stable&lt;/a&gt;&lt;/p&gt;
 

@@ -21,16 +21,16 @@
     <meta name="apple-mobile-web-app-title" content="Ghost" />
 
     <link rel="shortcut icon" href="favicon.ico" />
-    <link rel="apple-touch-icon-precomposed" href="http://localhost:2368/ghost/img/touch-icon-iphone.png?v=cd735a5bb1" />
-    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="http://localhost:2368/ghost/img/touch-icon-ipad.png?v=cd735a5bb1" />
-    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="http://localhost:2368/ghost/img/small.png?v=cd735a5bb1" />
-    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="http://localhost:2368/ghost/img/medium.png?v=cd735a5bb1" />
+    <link rel="apple-touch-icon-precomposed" href="http://localhost:2368/ghost/img/touch-icon-iphone.png?v=0febb201b9" />
+    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="http://localhost:2368/ghost/img/touch-icon-ipad.png?v=0febb201b9" />
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="http://localhost:2368/ghost/img/small.png?v=0febb201b9" />
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="http://localhost:2368/ghost/img/medium.png?v=0febb201b9" />
 
     <meta name="application-name" content="Ghost" />
     <meta name="msapplication-TileColor" content="#ffffff" />
-    <meta name="msapplication-square70x70logo" content="/ghost/img/small.png?v=cd735a5bb1" />
-    <meta name="msapplication-square150x150logo" content="/ghost/img/medium.png?v=cd735a5bb1" />
-    <meta name="msapplication-square310x310logo" content="/ghost/img/large.png?v=cd735a5bb1" />
+    <meta name="msapplication-square70x70logo" content="/ghost/img/small.png?v=0febb201b9" />
+    <meta name="msapplication-square150x150logo" content="/ghost/img/medium.png?v=0febb201b9" />
+    <meta name="msapplication-square310x310logo" content="/ghost/img/large.png?v=0febb201b9" />
 
         <meta name="env-fileStorage" content="true" data-type="bool" />
         <meta name="env-useGravatar" content="true" data-type="bool" />
@@ -42,8 +42,8 @@
         <meta name="env-clientId" content="ghost-admin" data-type="string" />
         <meta name="env-clientSecret" content="c53eeed18419" data-type="string" />
 
-    <link rel="stylesheet" href="http://localhost:2368/ghost/vendor.css?v=cd735a5bb1" />
-    <link rel="stylesheet" href="http://localhost:2368/ghost/ghost.css?v=cd735a5bb1" />
+    <link rel="stylesheet" href="http://localhost:2368/ghost/vendor.css?v=0febb201b9" />
+    <link rel="stylesheet" href="http://localhost:2368/ghost/ghost.css?v=0febb201b9" />
 
     
 </head>
@@ -52,7 +52,7 @@
 
 <div id="ember-basic-dropdown-wormhole"></div>
 
-<script src="http://localhost:2368/ghost/vendor.js?v=cd735a5bb1"></script>
-<script src="http://localhost:2368/ghost/ghost.js?v=cd735a5bb1"></script>
+<script src="http://localhost:2368/ghost/vendor.js?v=0febb201b9"></script>
+<script src="http://localhost:2368/ghost/ghost.js?v=0febb201b9"></script>
 </body>
 </html>
