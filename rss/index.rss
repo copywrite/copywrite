@@ -1,4 +1,176 @@
-<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" version="2.0"><channel><title>CopyWrite</title><description>Thoughts, stories and ideas.</description><link>http://localhost:2368/</link><generator>Ghost 0.11</generator><lastBuildDate>Fri, 16 Jun 2017 15:01:32 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title>在Github上部署Ghost 0.11.9</title><description>&lt;p&gt;[1] &lt;a href="https://ghost.org/developers/"&gt;https://ghost.org/developers/&lt;/a&gt;&lt;/p&gt;
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" version="2.0"><channel><title>CopyWrite</title><description>Thoughts, stories and ideas.</description><link>http://localhost:2368/</link><generator>Ghost 0.11</generator><lastBuildDate>Sat, 08 Jul 2017 13:11:23 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title>从零开始实现一个简单的 ibatis SQL 热部署</title><description>&lt;p&gt;[归档]&lt;/p&gt;
+
+&lt;p&gt;在 ibatis 配置文件修改后生效这个问题上，小朋友我尝试了很多不科学和科学的方式，通过单元测试 or 各种插件。&lt;/p&gt;
+
+&lt;p&gt;单元测试这一方式我比较推荐，不需花费额外的很多时间，可靠和简单。&lt;/p&gt;
+
+&lt;p&gt;至于后者呢，前有JRebel、HotCode，后有HotCode2，各种折腾。你要问我为什么不换成 MyBatis，我也不知道。&lt;/p&gt;
+
+&lt;p&gt;所以小朋友我决定自己做一个，或者说是尝试，哈哈。&lt;/p&gt;
+
+&lt;h6 id=""&gt;空想&lt;/h6&gt;
+
+&lt;p&gt;我们在调用 ibatis 的时候，它在背后是如何工作的？&lt;/p&gt;
+
+&lt;p&gt;例如最常见的一个 delete 操作：&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;(List&amp;lt;DogeDO&amp;gt;) sqlMapClientTemplate.delete(NAMESPACE + “delete", dogeQuery)&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;在developworks上找到了这样一张时序图 [1]&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="https://ooo.0o0.ooo/2017/07/08/5960d51d1249e.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;显然，在 SqlMapExecutorDelegate 14 号环节，ibatis 从 MappedStatement 中获得&lt;/p&gt;</description><link>http://localhost:2368/cong-ling-kai-shi-shi-xian-yi-ge-jian-dan-de-ibatis-sql-re-bu-shu/</link><guid isPermaLink="false">ac8bf426-c6eb-48b4-bfa0-33946c355d29</guid><dc:creator>dili</dc:creator><pubDate>Sat, 08 Jul 2017 13:07:18 GMT</pubDate><content:encoded>&lt;p&gt;[归档]&lt;/p&gt;
+
+&lt;p&gt;在 ibatis 配置文件修改后生效这个问题上，小朋友我尝试了很多不科学和科学的方式，通过单元测试 or 各种插件。&lt;/p&gt;
+
+&lt;p&gt;单元测试这一方式我比较推荐，不需花费额外的很多时间，可靠和简单。&lt;/p&gt;
+
+&lt;p&gt;至于后者呢，前有JRebel、HotCode，后有HotCode2，各种折腾。你要问我为什么不换成 MyBatis，我也不知道。&lt;/p&gt;
+
+&lt;p&gt;所以小朋友我决定自己做一个，或者说是尝试，哈哈。&lt;/p&gt;
+
+&lt;h6 id=""&gt;空想&lt;/h6&gt;
+
+&lt;p&gt;我们在调用 ibatis 的时候，它在背后是如何工作的？&lt;/p&gt;
+
+&lt;p&gt;例如最常见的一个 delete 操作：&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;(List&amp;lt;DogeDO&amp;gt;) sqlMapClientTemplate.delete(NAMESPACE + “delete", dogeQuery)&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;在developworks上找到了这样一张时序图 [1]&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="https://ooo.0o0.ooo/2017/07/08/5960d51d1249e.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;显然，在 SqlMapExecutorDelegate 14 号环节，ibatis 从 MappedStatement 中获得 DeleteStatement，这里的 Statement，可以粗鄙的视作真实的 SQL语句，即&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;delete * from database;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;MappedStatement 是如何初始化的？&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="https://ooo.0o0.ooo/2017/07/08/5960d586560c1.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;学习参考文件[2]，了解到经过一系列的解析之后，通过如下过程&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;addStatementNodelets {
+     statementParser.parseGeneralStatement {
+          newMappedStatementConfig {
+               delegate.addMappedStatement(mappedStatement)
+          }
+     }
+}&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;添加到 mappedStatements 时，进行了键值的重复判断&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;delegate.addMappedStatement(mappedStatement) {
+     if (mappedStatements.containsKey(ms.getId())) {
+      throw new SqlMapException("There is already a statement named " + ms.getId() + " in this SqlMap.");
+    }
+}&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;如果想在 SQL XML 更改之后重新解析并写入到 mappedStatements，要把这个重复判断干掉，需要通过以下的这些空想步骤。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;重写 addMappedStatement&lt;/li&gt;
+&lt;li&gt;就需要能介入 delegate&lt;/li&gt;
+&lt;li&gt;就需要能介入 delegate 初始化的地方，即介入 SqlMapClientImpl&lt;/li&gt;
+&lt;li&gt;就需要能介入 SqlMapClientImpl 初始化的地方，即介入 SqlMapClientFactoryBean&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Google和Stackoverflow一通后，发现可以通过重写 delegate 等类的方式解决上述问题的，[3]是一个完整的实现，大神啊。&lt;/p&gt;
+
+&lt;h6 id=""&gt;已有的方案&lt;/h6&gt;
+
+&lt;p&gt;先正向的看看别人做了什么，可以用来抄袭&lt;/p&gt;
+
+&lt;p&gt;DySqlMapClientFactoryBean&lt;/p&gt;
+
+&lt;p&gt;在 SqlMapClientFactoryBean 的基础上进行了如下扩展：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;初始化时将 configLocation、configLocations 保存下来，有何用？&lt;/li&gt;
+&lt;li&gt;重写了 buildSqlMapClient 方法，返回重写后的 DySqlMapClient&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;DySqlMapClient&lt;/p&gt;
+
+&lt;p&gt;对 SqlMapClientImpl 进行了如下扩展：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;将超类初始化为 重写后的 DySqlMapExecutorDelegate&lt;/li&gt;
+&lt;li&gt;自行解析 configLocation || configLocations 对应的配置文件，生成 SQL.XML -&gt; SQL_ID 映射关系&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;DySqlMapExecutorDelegate&lt;/p&gt;
+
+&lt;p&gt;对 SqlMapExecutorDelegate 进行了如下扩展：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;addMappedStatement，ID值重复时 remove 掉&lt;/li&gt;
+&lt;li&gt;增加了 checkAndRefreshSqlMap 方法，用来检查和刷新 Map&lt;/li&gt;
+&lt;li&gt;重写各操作实现接口，增加 checkAndRefreshSqlMap 调用&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;DySqlMapParser&lt;/p&gt;
+
+&lt;p&gt;对 SqlMapParser 进行了如下扩展：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;增加 resetSqlNodeLets，对 XmlParserState 进行重置。可能会引起 State 混乱&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;SqlMapConfigUtils&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;readSqlMapFileMapping，解析包含的 SQL XML 文件列表&lt;/li&gt;
+&lt;li&gt;readSqlMap，解析每个 SQL XML 中的 SQL ID&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h6 id=""&gt;改进的方案&lt;/h6&gt;
+
+&lt;p&gt;对[3]进行了测试，发现了一个比较重大的不同。我们的工程将 SQL XML 打包成了 jar，并且，即便是现成的文件 ，流程也变成了修改部署 war 包中的 XML 文件，而不是修改源文件，然后直接生效。所以现在面临了两个问题。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;如何解决 jar 带来的文件操作&lt;/li&gt;
+&lt;li&gt;SqlMapFile 直接与源文件关联&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h6 id=""&gt;编不下去了&lt;/h6&gt;
+
+&lt;p&gt;周末思考了一下之前遇到的两个问题
+&lt;img src="https://ooo.0o0.ooo/2017/07/08/5960d6af20c44.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;晚间溜达的时候想到的一出，回家实现勉强能用。&lt;/p&gt;
+
+&lt;p&gt;中心思想是搭个HTTP服务，将源文件doge.xml资源化为&lt;a href="http://localhost/doge.xml"&gt;http://localhost/doge.xml&lt;/a&gt; ，iBatis刷新时通过文件名构造URL，读取HTTP资源并进行解析。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src="https://ooo.0o0.ooo/2017/07/08/5960d6dfd79f1.png" alt=""&gt;&lt;/p&gt;
+
+&lt;p&gt;改造了一个http server&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;./http-server /src/main/resources/storage/sqlmap -p 59999 -j true&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;其实你也可以用&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;python -m SimpleHTTPServer 59999&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;弊端就是每次打开不同的工程得自己切到目录下敲命令启动服务器&lt;/p&gt;
+
+&lt;p&gt;事实上，如果你用 Intellij，默认配置下它会在 63342 端口下启动一个静态服务器&lt;/p&gt;
+
+&lt;p&gt;路径在&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;http://localhost:63342/your-project-home-/very-long-module-path/doge.xml&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;打完收工&lt;/p&gt;
+
+&lt;h6 id=""&gt;参考文献&lt;/h6&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;[1]深入分析 iBATIS 框架之系统架构与映射原理, &lt;a href="http://www.ibm.com/developerworks/cn/java/j-lo-ibatis-principle/"&gt;http://www.ibm.com/developerworks/cn/java/j-lo-ibatis-principle/&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;[2]ibatis源码学习(二)初始化和配置文件解析, &lt;a href="http://learnworld.iteye.com/blog/1450057"&gt;http://learnworld.iteye.com/blog/1450057&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;[3]http://bossbase.googlecode.com/svn/trunk/codecup/src/main/java/com/huawei/boss/ibatis/&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title>在Github上部署Ghost 0.11.9</title><description>&lt;p&gt;[1] &lt;a href="https://ghost.org/developers/"&gt;https://ghost.org/developers/&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;以下操作在 Mac，Node 6.9.0, Ghost 0.11.9 环境完成&lt;/p&gt;
 

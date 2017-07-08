@@ -1,0 +1,314 @@
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>从零开始实现一个简单的 ibatis SQL 热部署</title>
+    <meta name="description" content="">
+
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" href="../favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic%7COpen+Sans:700,400">
+    <link rel="stylesheet" type="text/css" href="../assets/css/screen.css?v=c2e3fe4d7c">
+
+
+    <link rel="canonical" href="index.html">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <link rel="amphtml" href="amp/index.html">
+    
+    <meta property="og:site_name" content="CopyWrite">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="从零开始实现一个简单的 ibatis SQL 热部署">
+    <meta property="og:description" content='[归档] 在 ibatis 配置文件修改后生效这个问题上，小朋友我尝试了很多不科学和科学的方式，通过单元测试 or 各种插件。 单元测试这一方式我比较推荐，不需花费额外的很多时间，可靠和简单。 至于后者呢，前有JRebel、HotCode，后有HotCode2，各种折腾。你要问我为什么不换成 MyBatis，我也不知道。 所以小朋友我决定自己做一个，或者说是尝试，哈哈。 空想 我们在调用 ibatis 的时候，它在背后是如何工作的？ 例如最常见的一个 delete 操作： (List&amp;lt;DogeDO&amp;gt;) sqlMapClientTemplate.delete(NAMESPACE + “delete", dogeQuery) 在developworks上找到了这样一张时序图 [1] 显然，在 SqlMapExecutorDelegate 14 号环节，ibatis 从 MappedStatement 中获得'>
+    <meta property="og:url" content="http://localhost:2368/cong-ling-kai-shi-shi-xian-yi-ge-jian-dan-de-ibatis-sql-re-bu-shu/">
+    <meta property="article:published_time" content="2017-07-08T13:07:18.000Z">
+    <meta property="article:modified_time" content="2017-07-08T13:11:11.000Z">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="从零开始实现一个简单的 ibatis SQL 热部署">
+    <meta name="twitter:description" content='[归档] 在 ibatis 配置文件修改后生效这个问题上，小朋友我尝试了很多不科学和科学的方式，通过单元测试 or 各种插件。 单元测试这一方式我比较推荐，不需花费额外的很多时间，可靠和简单。 至于后者呢，前有JRebel、HotCode，后有HotCode2，各种折腾。你要问我为什么不换成 MyBatis，我也不知道。 所以小朋友我决定自己做一个，或者说是尝试，哈哈。 空想 我们在调用 ibatis 的时候，它在背后是如何工作的？ 例如最常见的一个 delete 操作： (List&amp;lt;DogeDO&amp;gt;) sqlMapClientTemplate.delete(NAMESPACE + “delete", dogeQuery) 在developworks上找到了这样一张时序图 [1] 显然，在 SqlMapExecutorDelegate 14 号环节，ibatis 从 MappedStatement 中获得'>
+    <meta name="twitter:url" content="http://localhost:2368/cong-ling-kai-shi-shi-xian-yi-ge-jian-dan-de-ibatis-sql-re-bu-shu/">
+    <meta name="twitter:label1" content="Written by">
+    <meta name="twitter:data1" content="dili">
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "CopyWrite",
+        "logo": "http://localhost:2368/ghost/img/ghosticon.jpg"
+    },
+    "author": {
+        "@type": "Person",
+        "name": "dili",
+        "url": "http://localhost:2368/author/dili/",
+        "sameAs": []
+    },
+    "headline": "从零开始实现一个简单的 ibatis SQL 热部署",
+    "url": "http://localhost:2368/cong-ling-kai-shi-shi-xian-yi-ge-jian-dan-de-ibatis-sql-re-bu-shu/",
+    "datePublished": "2017-07-08T13:07:18.000Z",
+    "dateModified": "2017-07-08T13:11:11.000Z",
+    "description": "[归档] 在 ibatis 配置文件修改后生效这个问题上，小朋友我尝试了很多不科学和科学的方式，通过单元测试 or 各种插件。 单元测试这一方式我比较推荐，不需花费额外的很多时间，可靠和简单。 至于后者呢，前有JRebel、HotCode，后有HotCode2，各种折腾。你要问我为什么不换成 MyBatis，我也不知道。 所以小朋友我决定自己做一个，或者说是尝试，哈哈。 空想 我们在调用 ibatis 的时候，它在背后是如何工作的？ 例如最常见的一个 delete 操作： (List&amp;lt;DogeDO&amp;gt;) sqlMapClientTemplate.delete(NAMESPACE + “delete&quot;, dogeQuery) 在developworks上找到了这样一张时序图 [1] 显然，在 SqlMapExecutorDelegate 14 号环节，ibatis 从 MappedStatement 中获得",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "http://localhost:2368"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.11">
+    <link rel="alternate" type="application/rss+xml" title="CopyWrite" href="../rss/index.html">
+</head>
+<body class="post-template nav-closed">
+
+    <div class="nav">
+    <h3 class="nav-title">Menu</h3>
+    <a href="index.html#" class="nav-close">
+        <span class="hidden">Close</span>
+    </a>
+    <ul>
+            <li class="nav-home"><a href="../">Home</a></li>
+    </ul>
+        <a class="subscribe-button icon-feed" href="../rss/index.rss">Subscribe</a>
+</div>
+<span class="nav-cover"></span>
+
+
+    <div class="site-wrapper">
+
+        
+
+
+<header class="main-header post-head no-cover">
+    <nav class="main-nav  clearfix">
+        
+            <a class="menu-button icon-menu" href="index.html#"><span class="word">Menu</span></a>
+    </nav>
+</header>
+
+<main class="content" role="main">
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">从零开始实现一个简单的 ibatis SQL 热部署</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2017-07-08">08 July 2017</time> 
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>[归档]</p>
+
+<p>在 ibatis 配置文件修改后生效这个问题上，小朋友我尝试了很多不科学和科学的方式，通过单元测试 or 各种插件。</p>
+
+<p>单元测试这一方式我比较推荐，不需花费额外的很多时间，可靠和简单。</p>
+
+<p>至于后者呢，前有JRebel、HotCode，后有HotCode2，各种折腾。你要问我为什么不换成 MyBatis，我也不知道。</p>
+
+<p>所以小朋友我决定自己做一个，或者说是尝试，哈哈。</p>
+
+<h6 id="">空想</h6>
+
+<p>我们在调用 ibatis 的时候，它在背后是如何工作的？</p>
+
+<p>例如最常见的一个 delete 操作：</p>
+
+<p><code>(List&lt;DogeDO&gt;) sqlMapClientTemplate.delete(NAMESPACE + “delete", dogeQuery)</code></p>
+
+<p>在developworks上找到了这样一张时序图 [1]</p>
+
+<p><img src="https://ooo.0o0.ooo/2017/07/08/5960d51d1249e.png" alt=""></p>
+
+<p>显然，在 SqlMapExecutorDelegate 14 号环节，ibatis 从 MappedStatement 中获得 DeleteStatement，这里的 Statement，可以粗鄙的视作真实的 SQL语句，即</p>
+
+<p><code>delete * from database;</code></p>
+
+<p>MappedStatement 是如何初始化的？</p>
+
+<p><img src="https://ooo.0o0.ooo/2017/07/08/5960d586560c1.png" alt=""></p>
+
+<p>学习参考文件[2]，了解到经过一系列的解析之后，通过如下过程</p>
+
+<p><code>addStatementNodelets {
+     statementParser.parseGeneralStatement {
+          newMappedStatementConfig {
+               delegate.addMappedStatement(mappedStatement)
+          }
+     }
+}</code></p>
+
+<p>添加到 mappedStatements 时，进行了键值的重复判断</p>
+
+<p><code>delegate.addMappedStatement(mappedStatement) {
+     if (mappedStatements.containsKey(ms.getId())) {
+      throw new SqlMapException("There is already a statement named " + ms.getId() + " in this SqlMap.");
+    }
+}</code></p>
+
+<p>如果想在 SQL XML 更改之后重新解析并写入到 mappedStatements，要把这个重复判断干掉，需要通过以下的这些空想步骤。</p>
+
+<ul>
+<li>重写 addMappedStatement</li>
+<li>就需要能介入 delegate</li>
+<li>就需要能介入 delegate 初始化的地方，即介入 SqlMapClientImpl</li>
+<li>就需要能介入 SqlMapClientImpl 初始化的地方，即介入 SqlMapClientFactoryBean</li>
+</ul>
+
+<p>Google和Stackoverflow一通后，发现可以通过重写 delegate 等类的方式解决上述问题的，[3]是一个完整的实现，大神啊。</p>
+
+<h6 id="">已有的方案</h6>
+
+<p>先正向的看看别人做了什么，可以用来抄袭</p>
+
+<p>DySqlMapClientFactoryBean</p>
+
+<p>在 SqlMapClientFactoryBean 的基础上进行了如下扩展：</p>
+
+<ul>
+<li>初始化时将 configLocation、configLocations 保存下来，有何用？</li>
+<li>重写了 buildSqlMapClient 方法，返回重写后的 DySqlMapClient</li>
+</ul>
+
+<p>DySqlMapClient</p>
+
+<p>对 SqlMapClientImpl 进行了如下扩展：</p>
+
+<ul>
+<li>将超类初始化为 重写后的 DySqlMapExecutorDelegate</li>
+<li>自行解析 configLocation || configLocations 对应的配置文件，生成 SQL.XML -&gt; SQL_ID 映射关系</li>
+</ul>
+
+<p>DySqlMapExecutorDelegate</p>
+
+<p>对 SqlMapExecutorDelegate 进行了如下扩展：</p>
+
+<ul>
+<li>addMappedStatement，ID值重复时 remove 掉</li>
+<li>增加了 checkAndRefreshSqlMap 方法，用来检查和刷新 Map</li>
+<li>重写各操作实现接口，增加 checkAndRefreshSqlMap 调用</li>
+</ul>
+
+<p>DySqlMapParser</p>
+
+<p>对 SqlMapParser 进行了如下扩展：</p>
+
+<ul>
+<li>增加 resetSqlNodeLets，对 XmlParserState 进行重置。可能会引起 State 混乱</li>
+</ul>
+
+<p>SqlMapConfigUtils</p>
+
+<ul>
+<li>readSqlMapFileMapping，解析包含的 SQL XML 文件列表</li>
+<li>readSqlMap，解析每个 SQL XML 中的 SQL ID</li>
+</ul>
+
+<h6 id="">改进的方案</h6>
+
+<p>对[3]进行了测试，发现了一个比较重大的不同。我们的工程将 SQL XML 打包成了 jar，并且，即便是现成的文件 ，流程也变成了修改部署 war 包中的 XML 文件，而不是修改源文件，然后直接生效。所以现在面临了两个问题。</p>
+
+<ul>
+<li>如何解决 jar 带来的文件操作</li>
+<li>SqlMapFile 直接与源文件关联</li>
+</ul>
+
+<h6 id="">编不下去了</h6>
+
+<p>周末思考了一下之前遇到的两个问题
+<img src="https://ooo.0o0.ooo/2017/07/08/5960d6af20c44.png" alt=""></p>
+
+<p>晚间溜达的时候想到的一出，回家实现勉强能用。</p>
+
+<p>中心思想是搭个HTTP服务，将源文件doge.xml资源化为<a href="http://localhost/doge.xml">http://localhost/doge.xml</a> ，iBatis刷新时通过文件名构造URL，读取HTTP资源并进行解析。</p>
+
+<p><img src="https://ooo.0o0.ooo/2017/07/08/5960d6dfd79f1.png" alt=""></p>
+
+<p>改造了一个http server</p>
+
+<p><code>./http-server /src/main/resources/storage/sqlmap -p 59999 -j true</code></p>
+
+<p>其实你也可以用</p>
+
+<p><code>python -m SimpleHTTPServer 59999</code></p>
+
+<p>弊端就是每次打开不同的工程得自己切到目录下敲命令启动服务器</p>
+
+<p>事实上，如果你用 Intellij，默认配置下它会在 63342 端口下启动一个静态服务器</p>
+
+<p>路径在</p>
+
+<p><code>http://localhost:63342/your-project-home-/very-long-module-path/doge.xml</code></p>
+
+<p>打完收工</p>
+
+<h6 id="">参考文献</h6>
+
+<ul>
+<li><p>[1]深入分析 iBATIS 框架之系统架构与映射原理, <a href="http://www.ibm.com/developerworks/cn/java/j-lo-ibatis-principle/">http://www.ibm.com/developerworks/cn/java/j-lo-ibatis-principle/</a></p></li>
+<li><p>[2]ibatis源码学习(二)初始化和配置文件解析, <a href="http://learnworld.iteye.com/blog/1450057">http://learnworld.iteye.com/blog/1450057</a></p></li>
+<li><p>[3]http://bossbase.googlecode.com/svn/trunk/codecup/src/main/java/com/huawei/boss/ibatis/</p></li>
+</ul>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+                <h4><a href="../author/dili/">dili</a></h4>
+
+                    <p>Read <a href="../author/dili/">more posts</a> by this author.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="icon-twitter" href="https://twitter.com/intent/tweet?text=%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%20ibatis%20SQL%20%E7%83%AD%E9%83%A8%E7%BD%B2&amp;url=http://localhost:2368/cong-ling-kai-shi-shi-xian-yi-ge-jian-dan-de-ibatis-sql-re-bu-shu/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:2368/cong-ling-kai-shi-shi-xian-yi-ge-jian-dan-de-ibatis-sql-re-bu-shu/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://localhost:2368/cong-ling-kai-shi-shi-xian-yi-ge-jian-dan-de-ibatis-sql-re-bu-shu/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+
+        </footer>
+
+    </article>
+</main>
+
+<aside class="read-next">
+    <a class="read-next-story prev no-cover" href="../zai-githubshang-bu-shu-ghost-0-11-9/">
+        <section class="post">
+            <h2>在Github上部署Ghost 0.11.9</h2>
+            <p>[1] https://ghost.org/developers/ 以下操作在 Mac，Node 6.9.0, Ghost 0.11.9 环境完成 本地安装 下载Ghost的发布版本，https:…</p>
+        </section>
+    </a>
+</aside>
+
+
+
+        <footer class="site-footer clearfix">
+            <section class="copyright"><a href="../">CopyWrite</a> © 2017</section>
+            <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+        </footer>
+
+    </div>
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
+    
+    <script type="text/javascript" src="../assets/js/jquery.fitvids.js?v=c2e3fe4d7c"></script>
+    <script type="text/javascript" src="../assets/js/index.js?v=c2e3fe4d7c"></script>
+
+</body>
